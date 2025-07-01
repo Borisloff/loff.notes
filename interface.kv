@@ -1,0 +1,196 @@
+<BaseMDNavigationItem>
+
+    MDNavigationItemIcon:
+        icon: root.icon
+
+    MDNavigationItemLabel:
+        text: root.text
+
+
+
+MDBoxLayout:
+    orientation: 'vertical'
+
+    MDScreenManager:
+        id: screen_manager
+
+
+        MDScreen:
+
+            md_bg_color: 0, 0, 0, 1
+            name: 'notes_list'
+
+            MDBoxLayout:
+
+                orientation: 'vertical'
+                
+                MDBoxLayout:
+
+                    padding: dp(10)
+                    spacing: dp(10)
+                    adaptive_height: True
+
+                    MDCard:
+
+                        style: 'outlined'
+                        radius: [dp(40)]
+                        adaptive_height: True
+                        padding: dp(20)
+
+                        MDLabel:
+                            role: 'large'
+                            font_style: 'Title'
+                            text: 'LoffNotes'
+                            
+
+                        MDIconButton:
+
+                            id: sort_button
+                            icon: 'sort-variant'
+                            pos_hint: {'center_y': 0.5}
+                            on_release: app.sort_button_press()
+
+
+                MDScrollView:
+
+                    #size_hint: (1, 0.88)
+                    adaptive_height: True
+
+                    MDGridLayout:
+
+                        cols: 2
+                        adaptive_height: True
+                        size_hint_x: 1
+                        id: notes_md_list
+                        padding: dp(10)
+                        spacing: dp(10)
+
+
+        MDScreen:
+
+            md_bg_color: 0, 0, 0, 1
+            name: 'note'
+
+            MDBoxLayout:
+                orientation: 'vertical'
+
+                MDBoxLayout:
+
+                    padding: dp(10)
+                    spacing: dp(10)
+                    adaptive_height: True
+
+                    MDCard:
+
+                        style: 'outlined'
+                        radius: [dp(40)]
+                        adaptive_height: True
+                        padding: dp(20)
+
+                        MDIconButton:
+
+                            icon: 'arrow-left'
+                            pos_hint: {'center_x': 0.05, 'center_y': 0.5}
+                            on_release: app.back_to_notes_list()
+
+                        MDTextField:
+
+                            id: title_field
+                            radius: [dp(40)]
+                            mode: 'filled'
+                            pos_hint: {'center_y': 0.5}
+                            theme_bg_color: 'Custom'
+                            theme_line_color: 'Custom'
+                            fill_color_normal: 0, 0, 0, 0
+                            line_color_normal: 0, 0, 0, 0
+                            fill_color_focus: 0, 0, 0, 0
+                            line_color_focus: 0, 0, 0, 0
+                            
+                            MDTextFieldHintText:
+
+                                text: 'Название'
+
+                        MDIconButton:
+
+                            pos_hint: {'center_x': 0.95, 'center_y': 0.5}
+                            icon: 'delete'
+                            on_release: app.delete_note_question()
+
+
+                MDScrollView:
+
+
+                    MDBoxLayout:
+
+                        orientation: 'vertical'
+                        adaptive_height: True
+                        size_hint_x: 1
+
+                        MDTextField:
+                            id: text_field
+                            on_text: app.update_hint(self)
+                            mode: 'filled'
+                            multiline: True
+                            radius: [dp(40)]
+                            theme_bg_color: 'Custom'
+                            theme_line_color: 'Custom'
+                            fill_color_normal: 0, 0, 0, 0
+                            line_color_normal: 0, 0, 0, 0
+                            fill_color_focus: 0, 0, 0, 0
+                            line_color_focus: 0, 0, 0, 0
+                            MDTextFieldHelperText:
+                                text: 'Содержание'
+
+                        MDLabel:
+
+                            id: none_for_keyboard
+                            size_hint_y: None
+
+
+        MDScreen:
+            
+            name: 'settings'
+
+            MDCard:
+
+                style: 'outlined'
+                size_hint: (0.98, 0.1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.94}
+                radius: [dp(40)]
+
+                MDIconButton:
+
+                    icon: 'arrow-left'
+                    pos_hint: {'center_y': 0.5}
+                    on_release: app.back_to_notes_list()
+
+                MDLabel:
+
+                    text: 'Настройки'
+                    halign: 'center'
+
+                MDIconButton:
+
+                    icon: 'information'
+                    pos_hint: {'center_y': 0.5}
+
+
+    MDNavigationBar:
+        on_switch_tabs: app.on_switch_tabs(*args)
+        BaseMDNavigationItem:
+            id: home_button
+            icon: 'home'
+            text: 'Главная'
+            active: True
+        BaseMDNavigationItem:
+            id: plus_button
+            icon: 'plus'
+            text: 'Создать'
+        BaseMDNavigationItem:
+            id: search_button
+            icon: 'magnify'
+            text: 'Поиск'
+        BaseMDNavigationItem:
+            id: settings_button
+            icon: 'cog'
+            text: 'Настройки'
