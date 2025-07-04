@@ -472,5 +472,6 @@ class LoffNotes(MDApp):
         self.root.ids['notes_list_search'].cols = cols_num
         self.root.ids['notes_md_list'].cols = cols_num
         settings['cols_number'] = cols_num
+        update_settings_json()
 
 LoffNotes().run()
