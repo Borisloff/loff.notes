@@ -11,49 +11,89 @@
 MDBoxLayout:
     orientation: 'vertical'
 
+    MDWidget:
+        id: top_widget
+        size_hint_y: None
+        height: app.top_padding
+
     MDScreenManager:
         id: screen_manager
 
 
         MDScreen:
 
-            md_bg_color: 0, 0, 0, 1
             name: 'notes_list'
+            md_bg_color: app.theme_cls.backgroundColor
 
             MDBoxLayout:
 
                 orientation: 'vertical'
-                
-                MDBoxLayout:
 
+                MDBoxLayout:
                     padding: dp(10)
-                    spacing: dp(10)
                     adaptive_height: True
 
                     MDCard:
-
-                        style: 'outlined'
-                        radius: [dp(40)]
+                        orientation: 'vertical'
                         adaptive_height: True
-                        padding: dp(20)
+                        radius: dp(40)
+                        style: 'outlined'
 
-                        MDLabel:
-                            role: 'large'
-                            font_style: 'Title'
-                            text: 'LoffNotes'
-                            
+                        MDBoxLayout:
 
-                        MDIconButton:
+                            padding: dp(10)
+                            spacing: dp(10)
+                            adaptive_height: True
 
-                            id: sort_button
-                            icon: 'sort-variant'
-                            pos_hint: {'center_y': 0.5}
-                            on_release: app.sort_button_press()
+                            MDCard:
+
+                                style: 'outlined'
+                                radius: [dp(40)]
+                                adaptive_height: True
+                                padding: dp(20)
+
+                                MDLabel:
+                                    role: 'large'
+                                    font_style: 'Title'
+                                    text: 'Лофф.Заметки'
+
+
+                                MDIconButton:
+
+                                    id: sort_button
+                                    icon: 'sort-variant'
+                                    pos_hint: {'center_y': 0.5}
+                                    on_release: app.sort_button_press()
+
+
+                        MDBoxLayout:
+
+                            padding: dp(10)
+                            spacing: dp(10)
+                            adaptive_height: True
+
+                            MDCard:
+
+                                style: 'outlined'
+                                radius: [dp(40)]
+                                adaptive_height: True
+                                padding: dp(20)
+                                on_release: app.search_open()
+
+                                MDIconButton:
+
+                                    icon: 'magnify'
+                                    on_release: app.search_open()
+
+                                MDLabel:
+
+                                    role: 'large'
+                                    font_style: 'Title'
+                                    text: 'Поиск по заметкам'
 
 
                 MDScrollView:
 
-                    #size_hint: (1, 0.88)
                     adaptive_height: True
 
                     MDGridLayout:
@@ -68,8 +108,8 @@ MDBoxLayout:
 
         MDScreen:
 
-            md_bg_color: 0, 0, 0, 1
             name: 'note'
+            md_bg_color: app.theme_cls.backgroundColor
 
             MDBoxLayout:
                 orientation: 'vertical'
@@ -141,7 +181,7 @@ MDBoxLayout:
                             MDTextFieldHelperText:
                                 text: 'Содержание'
 
-                        MDLabel:
+                        MDWidget:
 
                             id: none_for_keyboard
                             size_hint_y: None
@@ -150,29 +190,223 @@ MDBoxLayout:
         MDScreen:
             
             name: 'settings'
+            md_bg_color: app.theme_cls.backgroundColor
 
-            MDCard:
+            MDScrollView:
 
-                style: 'outlined'
-                size_hint: (0.98, 0.1)
-                pos_hint: {'center_x': 0.5, 'center_y': 0.94}
-                radius: [dp(40)]
+                adaptive_height: True
 
-                MDIconButton:
+                MDBoxLayout:
 
-                    icon: 'arrow-left'
-                    pos_hint: {'center_y': 0.5}
-                    on_release: app.back_to_notes_list()
+                    orientation: 'vertical'
+                    padding: dp(10)
 
-                MDLabel:
+                    MDCard:
 
-                    text: 'Настройки'
-                    halign: 'center'
+                        style: 'outlined'
+                        radius: [dp(40)]
+                        padding: dp(20)
+                        orientation: 'vertical'
 
-                MDIconButton:
+                        MDLabel:
 
-                    icon: 'information'
-                    pos_hint: {'center_y': 0.5}
+                            text: 'Тема приложения'
+
+                        MDSegmentedButton:
+
+                            size_hint_x: 1
+
+                            MDSegmentedButtonItem:
+
+                                on_active: if self.active: app.theme_active(theme_name='light')
+                                id: theme_light_segment
+
+                                MDSegmentButtonIcon:
+                                    icon: 'white-balance-sunny'
+
+                                MDSegmentButtonLabel:
+                                    text: 'Светлая'
+
+                            MDSegmentedButtonItem:
+
+                                on_active: if self.active: app.theme_active(theme_name='dark')
+                                id: theme_dark_segment
+
+                                MDSegmentButtonIcon:
+                                    icon: 'moon-waning-crescent'
+
+                                MDSegmentButtonLabel:
+                                    text: 'Темная'
+
+
+                    MDCard:
+
+                        style: 'outlined'
+                        radius: [dp(40)]
+                        padding: dp(20)
+                        orientation: 'vertical'
+
+                        MDLabel:
+
+                            text: 'Цветовая схема приложения'
+
+                        MDSegmentedButton:
+
+                            MDSegmentedButtonItem:
+
+                                id: red_theme_button
+                                on_active: if self.active: app.color_theme_segment(color_name='Red')
+
+                                MDSegmentButtonLabel:
+                                    text: 'Красная'
+
+                            MDSegmentedButtonItem:
+
+                                id: green_theme_button
+                                on_active: if self.active: app.color_theme_segment(color_name='Green')
+
+                                MDSegmentButtonLabel:
+                                    text: "Зеленая"
+
+                            MDSegmentedButtonItem:
+
+                                id: blue_theme_button
+                                on_active: if self.active: app.color_theme_segment(color_name='Blue')
+
+                                MDSegmentButtonLabel:
+                                    text: 'Синяя'
+
+
+                    MDCard:
+
+                        style: 'outlined'
+                        radius: [dp(40)]
+                        padding: dp(20)
+                        orientation: 'vertical'
+
+                        MDLabel:
+
+                            text: 'Количество столбцов заметок'
+
+                        MDSegmentedButton:
+
+
+                            MDSegmentedButtonItem:
+
+                                id: col_1_segment
+                                on_active: if self.active: app.cols_segment(cols_num=1)
+
+                                MDSegmentButtonLabel:
+                                    text: '1 столбец'
+
+                            MDSegmentedButtonItem:
+
+                                id: col_2_segment
+                                on_active: if self.active: app.cols_segment(cols_num=2)
+
+                                MDSegmentButtonLabel:
+                                    text: '2 столбца'
+
+
+                    MDCard:
+
+                        style: 'outlined'
+                        radius: [dp(40)]
+                        padding: dp(20)
+                        orientation: 'vertical'
+
+                        MDLabel:
+
+                            text: 'Отступ сверху'
+
+                        MDSlider:
+
+                            min: 0
+                            max: 100
+                            value: app.top_padding
+                            step: 1
+                            on_value: app.set_top_padding(self.value)
+
+                            MDSliderHandle:
+                            MDSliderValueLabel:
+
+
+                    MDCard:
+
+                        style: 'outlined'
+                        radius: [dp(40)]
+                        padding: dp(20)
+                        orientation: 'vertical'
+
+                        MDLabel:
+
+                            text: 'Отступ снизу'
+
+                        MDSlider:
+
+                            min: 0
+                            max: 100
+                            value: app.bottom_padding
+                            step: 1
+                            on_value: app.set_bottom_padding(self.value)
+
+                            MDSliderHandle:
+                            MDSliderValueLabel:
+
+
+        MDScreen:
+
+            name: 'search'
+            md_bg_color: app.theme_cls.backgroundColor
+
+            MDBoxLayout:
+
+                orientation: 'vertical'
+                padding: dp(10)
+
+                MDCard:
+
+                    style: 'outlined'
+                    radius: [dp(40)]
+                    adaptive_height: True
+                    padding: dp(20)
+
+                    MDIconButton:
+                        icon: 'arrow-left'
+                        pos_hint: {'center_y': 0.5}
+                        on_release: app.back_to_notes_after_search()
+
+                    MDTextField:
+
+                        id: field_search
+                        radius: [dp(40)]
+                        mode: 'filled'
+                        pos_hint: {'center_y': 0.5}
+                        theme_bg_color: 'Custom'
+                        theme_line_color: 'Custom'
+                        fill_color_normal: 0, 0, 0, 0
+                        line_color_normal: 0, 0, 0, 0
+                        fill_color_focus: 0, 0, 0, 0
+                        line_color_focus: 0, 0, 0, 0
+                        on_text: app.search_notes()
+
+                        MDTextFieldHintText:
+
+                            text: 'Введите текст для поиска'
+
+
+                MDScrollView:
+
+                    adaptive_height: True
+
+                    MDGridLayout:
+
+                        cols: 2
+                        adaptive_height: True
+                        size_hint_x: 1
+                        id: notes_list_search
+                        padding: dp(10)
+                        spacing: dp(10)
 
 
     MDNavigationBar:
@@ -187,10 +421,12 @@ MDBoxLayout:
             icon: 'plus'
             text: 'Создать'
         BaseMDNavigationItem:
-            id: search_button
-            icon: 'magnify'
-            text: 'Поиск'
-        BaseMDNavigationItem:
             id: settings_button
             icon: 'cog'
             text: 'Настройки'
+
+
+    MDWidget:
+        id: bottom_widget
+        size_hint_y: None
+        height: app.bottom_padding

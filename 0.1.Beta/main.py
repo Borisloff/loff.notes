@@ -96,6 +96,11 @@ def deleting(key):
         json.dump(notes, f, ensure_ascii=False, indent=4)
 
 
+def update_settings_json():
+    with open(os.path.join(path, 'settings.json'), 'w', encoding='utf-8') as f:
+        json.dump(settings, f, ensure_ascii=False, indent=4)
+
+
 
 font_scales = {'very_small': 0.6,
                'small': 0.8,
@@ -112,13 +117,15 @@ class BaseMDNavigationItem(MDNavigationItem):
 
 
 class LoffNotes(MDApp):
+    top_padding = settings['top_padding']
+    bottom_padding = settings['bottom_padding']
 
     def build(self):
 
         global settings, notes
         self.root = Builder.load_file('interface.kv')
-        self.theme_cls.theme_style = 'Dark'
-        self.theme_cls.primary_palette = 'Green'
+        self.theme_cls.theme_style = settings['theme']
+        self.theme_cls.primary_palette = settings['theme_color']
         self.save_status = False
         self.new_status = False
         self.root.ids['none_for_keyboard'].height = Window.height * 0.6
@@ -142,6 +149,7 @@ class LoffNotes(MDApp):
     def update_notes_list(self):
 
         self.root.ids['notes_md_list'].clear_widgets()
+        self.root.ids['notes_md_list'].cols = settings['cols_number']
 
 
         for key, value in notes.items():
@@ -151,13 +159,15 @@ class LoffNotes(MDApp):
                                   size_hint=(1, None),
                                   radius=[dp(40)],
                                   style='outlined',
-                                  padding=dp(20))
+                                  padding=dp(20),
+                                  height = dp(100))
             
             md_list_item.note_id = key
 
             md_list_item.add_widget(MDLabel(text=str(value[0]),
                                             role = 'large',
-                                            font_style = 'Title'))
+                                            font_style = 'Title',
+                                            shorten=True))
 
             md_list_item.add_widget(MDLabel(text = str(value[1]),
                                             role = 'medium',
@@ -170,7 +180,6 @@ class LoffNotes(MDApp):
 
 
         self.root.ids['screen_manager'].current = 'notes_list'
-        self.root.transition = SlideTransition(direction='left')
 
 
     def open_notes(self, key):
@@ -183,49 +192,38 @@ class LoffNotes(MDApp):
         self.root.transition = SlideTransition(direction='right')
         self.save_status = False
 
+        self.root.ids['plus_button'].active = False
+        self.root.ids['settings_button'].active = False
+        self.root.ids['home_button'].active = False
 
     def back_to_notes_list(self):
 
-        if self.new_status == False and self.save_status == False:
+        if self.root.ids['title_field'].text != '' and self.root.ids['text_field'].text != '':
+            if self.new_status == False and self.save_status == False:
 
-            loading(self.root.ids['title_field'].text,
-                    self.root.ids['text_field'].text,
-                    self.key_note)
+                loading(self.root.ids['title_field'].text,
+                        self.root.ids['text_field'].text,
+                        self.key_note)
 
-        elif self.new_status == True and self.save_status == False:
+            elif self.new_status == True and self.save_status == False:
 
-            loading(self.root.ids['title_field'].text,
-                    self.root.ids['text_field'].text)
-
-
-        self.new_status = False
+                loading(self.root.ids['title_field'].text,
+                        self.root.ids['text_field'].text)
 
 
-        self.update_notes_list()
+            self.new_status = False
 
 
-        self.root.ids['plus_button'].active = False
-        self.root.ids['search_button'].active = False
-        self.root.ids['settings_button'].active = False
-        self.root.ids['home_button'].active = True
-
-
-    def save_note(self):
-
-        if self.new_status == False:
-
-            loading(self.root.ids['title_field'].text,
-                    self.root.ids['text_field'].text,
-                    self.key_note)
+            self.update_notes_list()
 
         else:
 
-            loading(self.root.ids['title_field'].text,
-                    self.root.ids['text_field'].text)
+            self.root.ids['screen_manager'].current = 'notes_list'
 
 
-        self.save_status = True
-        self.update_notes_list()
+        self.root.ids['plus_button'].active = False
+        self.root.ids['settings_button'].active = False
+        self.root.ids['home_button'].active = True
 
 
     def new_note_button(self):
@@ -234,7 +232,6 @@ class LoffNotes(MDApp):
         self.root.ids['text_field'].text = ''
         self.new_status = True
         self.root.ids['screen_manager'].current = 'note'
-        self.root.transition = SlideTransition(direction = 'right')
 
 
     def delete_note_question(self):
@@ -280,17 +277,15 @@ class LoffNotes(MDApp):
 
         self.update_notes_list()
 
+        self.root.ids['plus_button'].active = False
+        self.root.ids['settings_button'].active = False
+        self.root.ids['home_button'].active = True
+
 
     def back_delete_note(self):
 
         self.md_dialog_question_delete.dismiss()
         self.root.ids['screen_manager'].current = 'note'
-
-    
-    def settings_open(self):
-
-        self.root.transition = SlideTransition(direction='left')
-        self.root.ids['screen_manager'].current = 'settings'
 
 
     def sort_button_press(self):
@@ -323,7 +318,23 @@ class LoffNotes(MDApp):
 
         elif item.text == 'Настройки':
 
+            if self.theme_cls.theme_style == 'Dark':
+                self.root.ids['theme_dark_segment'].active = True
+            else:
+                self.root.ids['theme_light_segment'].active = True
+
+            if self.theme_cls.primary_palette == 'Red':
+                self.root.ids['red_theme_button'].active = True
+            elif self.theme_cls.primary_palette == 'Green':
+                self.root.ids['green_theme_button'].active = True
+            else:
+                self.root.ids['blue_theme_button'].active = True
             screen_manager.current = 'settings'
+
+            if settings['cols_number'] == 1:
+                self.root.ids['col_1_segment'].active = True
+            else:
+                self.root.ids['col_2_segment'].active = True
 
         elif item.text == 'Создать':
 
@@ -342,9 +353,7 @@ class LoffNotes(MDApp):
         notes_sorted = sorted(notes.items(), key = lambda x: x[1][0])
         notes = dict(notes_sorted)
 
-        with open(os.path.join(path, 'settings.json'), 'w', encoding='utf-8') as f:
-
-            json.dump(settings, f, ensure_ascii=False, indent=4)
+        update_settings_json()
 
         self.update_notes_list()
     
@@ -356,22 +365,112 @@ class LoffNotes(MDApp):
         notes_sorted.reverse()
         notes = dict(notes_sorted)
 
-        with open(os.path.join(path, 'settings.json'), 'w', encoding='utf-8') as f:
-
-            json.dump(settings, f, ensure_ascii=False, indent=4)
+        update_settings_json()
 
         self.update_notes_list()
 
-    def update_hint(self, instance):
+    def search_open(self):
 
-        if instance.text.strip():
+        self.root.ids['plus_button'].active = False
+        self.root.ids['settings_button'].active = False
+        self.root.ids['home_button'].active = False
 
-            instance.hint_text = ""
+        self.root.ids['notes_list_search'].cols = settings['cols_number']
+
+        self.root.ids['screen_manager'].current = 'search'
+
+    def back_to_notes_after_search(self):
+        self.root.ids['screen_manager'].current = 'notes_list'
+
+        self.root.ids['plus_button'].active = False
+        self.root.ids['settings_button'].active = False
+        self.root.ids['home_button'].active = True
+
+    def search_notes(self):
+
+        self.root.ids['notes_list_search'].clear_widgets()
+
+        text_search = self.root.ids['field_search'].text
+
+        for key, value in notes.items():
+
+            if text_search != '':
+
+                if text_search in value[0] or text_search in value[1]:
+
+                    md_list_item = MDCard(on_release=lambda x, k=key: self.open_notes(k),
+                                          orientation='vertical',
+                                          size_hint=(1, None),
+                                          radius=[dp(40)],
+                                          style='outlined',
+                                          padding=dp(20),
+                                          height=dp(100))
+
+                    md_list_item.note_id = key
+
+                    md_list_item.add_widget(MDLabel(text=str(value[0]),
+                                                    role='large',
+                                                    font_style='Title',
+                                                    shorten=True))
+
+                    md_list_item.add_widget(MDLabel(text=str(value[1]),
+                                                    role='medium',
+                                                    shorten=True,
+                                                    halign='left',
+                                                    font_style='Body'))
+
+                    self.root.ids['notes_list_search'].add_widget(md_list_item)
+
+        self.root.ids['screen_manager'].current = 'search'
+
+
+    def set_top_padding(self, value):
+        settings['top_padding'] = dp(value)
+        self.top_padding = settings['top_padding']
+        self.root.ids['top_widget'].height = self.top_padding
+        update_settings_json()
+
+
+    def set_bottom_padding(self, value):
+        settings['bottom_padding'] = dp(value)
+        self.bottom_padding = settings['bottom_padding']
+        self.root.ids['bottom_widget'].height = self.bottom_padding
+        update_settings_json()
+
+    def theme_active(self, theme_name):
+
+        if theme_name == 'light':
+            self.theme_cls.theme_style = 'Light'
+            settings['theme'] = 'Light'
+            update_settings_json()
 
         else:
+            self.theme_cls.theme_style = 'Dark'
+            settings['theme'] = 'Dark'
+            update_settings_json()
 
-            instance.hint_text = "Содержание"
-    
+    def color_theme_segment(self, color_name):
 
+        if color_name == 'Red':
+
+            self.theme_cls.primary_palette = 'Red'
+            settings['theme_color'] = 'Red'
+            update_settings_json()
+
+        elif color_name == 'Green':
+
+            self.theme_cls.primary_palette = 'Green'
+            settings['theme_color'] = 'Green'
+            update_settings_json()
+
+        else:
+            self.theme_cls.primary_palette = 'Blue'
+            settings['theme_color'] = 'Blue'
+            update_settings_json()
+
+    def cols_segment(self, cols_num):
+        self.root.ids['notes_list_search'].cols = cols_num
+        self.root.ids['notes_md_list'].cols = cols_num
+        settings['cols_number'] = cols_num
 
 LoffNotes().run()
