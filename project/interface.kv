@@ -168,7 +168,6 @@ MDBoxLayout:
 
                         MDTextField:
                             id: text_field
-                            on_text: app.update_hint(self)
                             mode: 'filled'
                             multiline: True
                             radius: [dp(40)]
@@ -221,9 +220,6 @@ MDBoxLayout:
                                 on_active: if self.active: app.theme_active(theme_name='light')
                                 id: theme_light_segment
 
-                                MDSegmentButtonIcon:
-                                    icon: 'white-balance-sunny'
-
                                 MDSegmentButtonLabel:
                                     text: 'Светлая'
 
@@ -231,9 +227,6 @@ MDBoxLayout:
 
                                 on_active: if self.active: app.theme_active(theme_name='dark')
                                 id: theme_dark_segment
-
-                                MDSegmentButtonIcon:
-                                    icon: 'moon-waning-crescent'
 
                                 MDSegmentButtonLabel:
                                     text: 'Темная'
@@ -402,7 +395,7 @@ MDBoxLayout:
                     MDGridLayout:
 
                         cols: 2
-                        adaptive_height: True
+                        height: dp(100)
                         size_hint_x: 1
                         id: notes_list_search
                         padding: dp(10)
