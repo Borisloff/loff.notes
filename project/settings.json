@@ -1,8 +1,6 @@
 {
     "sort": "date",
-    "top_padding": 0.0,
-    "bottom_padding": 0.0,
     "theme": "Dark",
-    "theme_color": "Red",
-    "cols_number": 1
+    "theme_color": "Green",
+    "cols_number": 2
 }

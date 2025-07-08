@@ -11,10 +11,6 @@
 MDBoxLayout:
     orientation: 'vertical'
 
-    MDWidget:
-        id: top_widget
-        size_hint_y: None
-        height: app.top_padding
 
     MDScreenManager:
         id: screen_manager
@@ -152,7 +148,13 @@ MDBoxLayout:
 
                         MDIconButton:
 
-                            pos_hint: {'center_x': 0.95, 'center_y': 0.5}
+                            icon: 'content-save'
+                            pos_hint: {'x': 0.80, 'center_y': 0.50}
+                            on_release: app.save_note()
+
+                        MDIconButton:
+
+                            pos_hint: {'x': 0.90, 'center_y': 0.5}
                             icon: 'delete'
                             on_release: app.delete_note_question()
 
@@ -179,6 +181,7 @@ MDBoxLayout:
                             line_color_focus: 0, 0, 0, 0
                             MDTextFieldHelperText:
                                 text: 'Содержание'
+                                mode: 'persistent'
 
                         MDWidget:
 
@@ -205,11 +208,13 @@ MDBoxLayout:
                         style: 'outlined'
                         radius: [dp(40)]
                         padding: dp(20)
+                        size_hint_y: None
+                        height: dp(100)
                         orientation: 'vertical'
 
                         MDLabel:
 
-                            text: 'Тема приложения'
+                            text: 'Тема приложения:'
 
                         MDSegmentedButton:
 
@@ -237,11 +242,13 @@ MDBoxLayout:
                         style: 'outlined'
                         radius: [dp(40)]
                         padding: dp(20)
+                        size_hint_y: None
+                        height: dp(100)
                         orientation: 'vertical'
 
                         MDLabel:
 
-                            text: 'Цветовая схема приложения'
+                            text: 'Цветовая схема приложения:'
 
                         MDSegmentedButton:
 
@@ -275,11 +282,13 @@ MDBoxLayout:
                         style: 'outlined'
                         radius: [dp(40)]
                         padding: dp(20)
+                        size_hint_y: None
+                        height: dp(100)
                         orientation: 'vertical'
 
                         MDLabel:
 
-                            text: 'Количество столбцов заметок'
+                            text: 'Количество столбцов заметок:'
 
                         MDSegmentedButton:
 
@@ -299,52 +308,6 @@ MDBoxLayout:
 
                                 MDSegmentButtonLabel:
                                     text: '2 столбца'
-
-
-                    MDCard:
-
-                        style: 'outlined'
-                        radius: [dp(40)]
-                        padding: dp(20)
-                        orientation: 'vertical'
-
-                        MDLabel:
-
-                            text: 'Отступ сверху'
-
-                        MDSlider:
-
-                            min: 0
-                            max: 100
-                            value: app.top_padding
-                            step: 1
-                            on_value: app.set_top_padding(self.value)
-
-                            MDSliderHandle:
-                            MDSliderValueLabel:
-
-
-                    MDCard:
-
-                        style: 'outlined'
-                        radius: [dp(40)]
-                        padding: dp(20)
-                        orientation: 'vertical'
-
-                        MDLabel:
-
-                            text: 'Отступ снизу'
-
-                        MDSlider:
-
-                            min: 0
-                            max: 100
-                            value: app.bottom_padding
-                            step: 1
-                            on_value: app.set_bottom_padding(self.value)
-
-                            MDSliderHandle:
-                            MDSliderValueLabel:
 
 
         MDScreen:
@@ -395,7 +358,6 @@ MDBoxLayout:
                     MDGridLayout:
 
                         cols: 2
-                        height: dp(100)
                         size_hint_x: 1
                         id: notes_list_search
                         padding: dp(10)
@@ -417,9 +379,3 @@ MDBoxLayout:
             id: settings_button
             icon: 'cog'
             text: 'Настройки'
-
-
-    MDWidget:
-        id: bottom_widget
-        size_hint_y: None
-        height: app.bottom_padding

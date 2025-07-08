@@ -117,8 +117,7 @@ class BaseMDNavigationItem(MDNavigationItem):
 
 
 class LoffNotes(MDApp):
-    top_padding = settings['top_padding']
-    bottom_padding = settings['bottom_padding']
+
 
     def build(self):
 
@@ -198,7 +197,7 @@ class LoffNotes(MDApp):
 
     def back_to_notes_list(self):
 
-        if self.root.ids['title_field'].text != '' and self.root.ids['text_field'].text != '':
+        if self.root.ids['title_field'].text != '' or self.root.ids['text_field'].text != '':
             if self.new_status == False and self.save_status == False:
 
                 loading(self.root.ids['title_field'].text,
@@ -226,15 +225,25 @@ class LoffNotes(MDApp):
         self.root.ids['home_button'].active = True
 
 
-    def new_note_button(self):
+    def save_note(self):
 
-        self.root.ids['title_field'].text = ''
-        self.root.ids['text_field'].text = ''
-        self.new_status = True
-        self.root.ids['screen_manager'].current = 'note'
+        if self.root.ids['title_field'].text != '' or self.root.ids['text_field'].text != '':
+            if self.new_status == False and self.save_status == False:
+
+                loading(self.root.ids['title_field'].text,
+                        self.root.ids['text_field'].text,
+                        self.key_note)
+
+            elif self.new_status == True and self.save_status == False:
+
+                loading(self.root.ids['title_field'].text,
+                        self.root.ids['text_field'].text)
 
 
-    def delete_note_question(self):
+            self.new_status = False
+
+
+    def delete_note_question(self): 
         
         self.md_dialog_question_delete = MDDialog(
             MDDialogHeadlineText(
@@ -303,7 +312,10 @@ class LoffNotes(MDApp):
             }
         ]
         MDDropdownMenu(
-            caller=self.root.ids['sort_button'], items=menu_items
+            caller=self.root.ids['sort_button'],
+            items=menu_items,
+            position='bottom',
+            pos_hint={'right': 0.90}
         ).open()
 
 
@@ -314,9 +326,16 @@ class LoffNotes(MDApp):
 
         if item.text == 'Главная':
 
+            if screen_manager.current == 'note':
+
+                self.back_to_notes_list()
+
             screen_manager.current = 'notes_list'
 
         elif item.text == 'Настройки':
+
+            if screen_manager.current == 'note':
+                self.save_note()
 
             if self.theme_cls.theme_style == 'Dark':
                 self.root.ids['theme_dark_segment'].active = True
@@ -342,8 +361,8 @@ class LoffNotes(MDApp):
             self.root.ids['text_field'].text = ''
             self.new_status = True
             self.root.ids['screen_manager'].current = 'note'
-            self.root.transition = SlideTransition(direction = 'right')
             screen_manager.current = 'note'
+
 
 
     def sort_alphabet(self):
@@ -422,20 +441,6 @@ class LoffNotes(MDApp):
                     self.root.ids['notes_list_search'].add_widget(md_list_item)
 
         self.root.ids['screen_manager'].current = 'search'
-
-
-    def set_top_padding(self, value):
-        settings['top_padding'] = dp(value)
-        self.top_padding = settings['top_padding']
-        self.root.ids['top_widget'].height = self.top_padding
-        update_settings_json()
-
-
-    def set_bottom_padding(self, value):
-        settings['bottom_padding'] = dp(value)
-        self.bottom_padding = settings['bottom_padding']
-        self.root.ids['bottom_widget'].height = self.bottom_padding
-        update_settings_json()
 
     def theme_active(self, theme_name):
 
